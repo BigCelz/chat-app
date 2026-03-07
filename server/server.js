@@ -10,12 +10,21 @@ import { Server } from "socket.io";
 const app = express();
 const server = http.createServer(app);
 
+const allowedOrigins = [
+  "https://chat-app-kappa-peach.vercel.app",
+  "http://localhost:5173",
+];
+
+const corsOptions = {
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+};
+
 // Initialize Socket.IO
 export const io = new Server(server, {
-  cors: {
-    origin: "*",
-    methods: ["GET", "POST", "PUT", "DELETE"],
-  },
+  cors: corsOptions,
 });
 
 // Store online users
@@ -28,10 +37,8 @@ io.on("connection", (socket) => {
 
   if (userId) userSocketMap[userId] = socket.id;
 
-  //emitting online users to all clients
   io.emit("getOnlineUsers", Object.keys(userSocketMap));
 
-  //disconnect events
   socket.on("disconnect", () => {
     console.log("User disconnected:", userId);
     delete userSocketMap[userId];
@@ -39,8 +46,9 @@ io.on("connection", (socket) => {
   });
 });
 
-// Middleware
-app.use(cors({ origin: "*", methods: ["GET", "POST", "PUT", "DELETE"] }));
+// Middleware — CORS and OPTIONS must come first
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 
 // Routes
@@ -56,5 +64,4 @@ if (process.env.NODE_ENV !== "production") {
   server.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
 }
 
-//export server for vercel deployment
 export default server;

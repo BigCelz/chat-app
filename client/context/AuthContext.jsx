@@ -4,7 +4,9 @@ import toast from "react-hot-toast";
 import { io } from "socket.io-client";
 
 const backendUrl = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
+
 axios.defaults.baseURL = backendUrl;
+axios.defaults.withCredentials = true;
 
 export const AuthContext = createContext();
 
@@ -13,9 +15,8 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
-  const [loading, setLoading] = useState(true); // track initial auth check
+  const [loading, setLoading] = useState(true);
 
-  // check if user is authenticated
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/auth/check");
@@ -30,7 +31,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // login / signup
   const login = async (state, credentials) => {
     try {
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
@@ -49,19 +49,17 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // logout
   const logout = () => {
     setToken(null);
-    onlineUsers
-    setAuthUser(null);
+    setAuthUser(null);        // ← was missing setAuthUser call (just had bare `onlineUsers`)
     setOnlineUsers([]);
     localStorage.removeItem("token");
     axios.defaults.headers.common["token"] = null;
     socket?.disconnect();
+    setSocket(null);          // ← clear socket state on logout
     toast.success("Logged out successfully");
   };
 
-  // update profile
   const updateProfile = async (body) => {
     try {
       const { data } = await axios.put("/api/auth/update-profile", body);
@@ -76,7 +74,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // connect to socket server
   const connectSocket = (userData) => {
     if (!userData || socket?.connected) return;
 
