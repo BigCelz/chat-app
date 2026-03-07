@@ -7,7 +7,6 @@ import login1 from "../assets/login1.jpg";
 import login2 from "../assets/login2.jpg";
 
 export const assets = {
-  chat1,
   avatar,
   chatIcon,
   user1,
