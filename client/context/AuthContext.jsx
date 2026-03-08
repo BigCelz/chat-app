@@ -51,12 +51,12 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setToken(null);
-    setAuthUser(null);        // ← was missing setAuthUser call (just had bare `onlineUsers`)
+    setAuthUser(null); // ← was missing setAuthUser call (just had bare `onlineUsers`)
     setOnlineUsers([]);
     localStorage.removeItem("token");
     axios.defaults.headers.common["token"] = null;
     socket?.disconnect();
-    setSocket(null);          // ← clear socket state on logout
+    setSocket(null); // ← clear socket state on logout
     toast.success("Logged out successfully");
   };
 
@@ -75,7 +75,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   const connectSocket = (userData) => {
-    if (!userData || socket?.connected) return;
+    if (!userData) return;
+    if (socket?.connected) return;
+    socket?.disconnect();
 
     const newSocket = io(backendUrl, {
       query: { userId: userData._id },
