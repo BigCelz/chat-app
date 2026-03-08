@@ -104,7 +104,7 @@ const LoginPage = () => {
               {/* Submit Button */}
               <button
                 className="w-full !py-2 rounded-lg bg-white text-black font-medium 
-                hover:bg-gray-200 transition !mt-2"
+                hover:bg-gray-200 transition !mt-2 cursor-pointer"
               >
                 {currState === "Sign Up" ? "Create Account" : "Login"}
               </button>
