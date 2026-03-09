@@ -60,7 +60,7 @@ const LoginPage = () => {
               {currState === "Sign Up" && !isDataSubmitted && (
                 <input
                   type="text"
-                  placeholder="Full Name"
+                  placeholder="Username"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
@@ -72,7 +72,7 @@ const LoginPage = () => {
                 <>
                   <input
                     type="email"
-                    placeholder="email@example.com"
+                    placeholder="Email@example.com"
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
@@ -103,8 +103,8 @@ const LoginPage = () => {
 
               {/* Submit Button */}
               <button
-                className="w-full !py-2 rounded-lg bg-white text-black font-medium 
-                hover:bg-gray-200 transition !mt-2 cursor-pointer"
+                className="w-full !py-2 rounded-lg  font-medium 
+                hover:bg-gray-200 transition !mt-2 cursor-pointer !bg-white !text-black"
               >
                 {currState === "Sign Up" ? "Create Account" : "Login"}
               </button>
